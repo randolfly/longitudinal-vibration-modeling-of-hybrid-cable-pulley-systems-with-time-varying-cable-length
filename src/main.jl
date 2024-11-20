@@ -12,16 +12,16 @@ end
 
 # init config params
 begin
-    include("param_ideal.jl")
+    # include("param_ideal.jl")
     # include("param_1p.jl")
-    # include("param_3p.jl")
+    include("param_3p.jl")
 end
 
 # simulation params
 begin
     # const N = 10
     const N = 3
-    tspan = (0.0, 6.0)
+    tspan = (0.0, 8.0)
     # tspan = (0.0, 0.1)  # benchmark time span
     tol = 1e-10
 end
@@ -76,11 +76,11 @@ end
 N
 T()
 tspan
-Tp[1] / rd
 Td / rd
-Cp[1] / rd
 Cd / rd
-title = "test_full_N3_T10"
+lp
+title = "full_N3_3p"
+# title = "full_N3_1p"
 
 # solve the ode
 
@@ -147,10 +147,11 @@ end
 
 begin
     using MAT
-    file = matopen("../data/" * title * ".mat", "w")
+    file = matopen("./data/" * title * ".mat", "w")
     write(file, title * "_xe", sol_xe)
     write(file, title * "_dxe", sol_dxe)
     write(file, title * "_force", sol_cable_force)
 
     close(file)
+    display("post data exported!")
 end

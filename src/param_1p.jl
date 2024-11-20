@@ -9,7 +9,7 @@ const A = π * (cable_diameter / 2)^2
 const ρ = 7.5e-3
 # const ρ = 1.0
 
-const L = 1.40
+const L = 0.42 + 1.04 * 1
 const a = sqrt(A * E / ρ)
 
 # winch params
@@ -18,9 +18,9 @@ const ld = 0.0  # residual length to xe
 const Id = 1.7485e-5 + 1.11e-3
 
 # pulley params
-const Ip = [1.7485e-5; 1.7485e-5]
-const lp = [0.26; 1.11]    # residual length to xe
-const rp = [rd; rd; rd; rd]
+const Ip = [1.7485e-5;]
+const lp = [0.42;]    # residual length to xe
+const rp = [rd; rd]
 const pulley_num = length(Ip)
 
 # mass params
@@ -30,16 +30,16 @@ const k = 1290.44
 
 
 # friction params
-const Td = 0.4 * rd
-const Cd = 0.0 * rd
+const Td = 0.155 * rd
+const Cd = 0.020 * rd
 const Tp_i = Td
 const Cp_i = Cd
-const Tp = [Tp_i; Tp_i; Tp_i]
-const Cp = [Cp_i; Cp_i; Cp_i]
+const Tp = [Tp_i;]
+const Cp = [Cp_i;]
 const Tm = 0.0
 const Cm = 0.0
 
 # driven force
 function T()
-    return 0.72555  # 48.37*rd
+    return 48.37 * rd
 end
