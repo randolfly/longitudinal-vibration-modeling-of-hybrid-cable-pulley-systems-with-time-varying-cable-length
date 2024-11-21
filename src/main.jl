@@ -17,10 +17,13 @@ begin
     include("param_3p.jl")
 end
 
+model_type = "full"
+# model_type = "partial"
+
 # simulation params
 begin
-    # const N = 10
-    const N = 3
+    const N = 5
+    # const N = 3
     tspan = (0.0, 8.0)
     # tspan = (0.0, 0.1)  # benchmark time span
     tol = 1e-10
@@ -29,10 +32,8 @@ end
 # define ode
 
 begin
-    include("util_full.jl")
-    include("ode_full.jl")
-    # include("util_partial.jl")
-    # include("ode_partial.jl")
+    include("util_" * model_type * ".jl")
+    include("ode_" * model_type * ".jl")
     function ode_function!(dX, X, p, t)
         x = X[1:(N+1)]
         dx = X[(N+2):end]
@@ -79,8 +80,7 @@ tspan
 Td / rd
 Cd / rd
 lp
-title = "full_N3_3p"
-# title = "full_N3_1p"
+title = model_type * "_N5_3p"
 
 # solve the ode
 
