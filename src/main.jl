@@ -10,20 +10,20 @@ begin
     using BenchmarkTools, Profile
 end
 
+# model_type = "full"
+model_type = "partial"
+# param_type = "ideal"
+# param_type = "3p"
+param_type = "1p"
+
 # init config params
 begin
-    # include("param_ideal.jl")
-    # include("param_1p.jl")
-    include("param_3p.jl")
+    include("param_" * param_type * ".jl")
 end
-
-model_type = "full"
-# model_type = "partial"
 
 # simulation params
 begin
-    const N = 5
-    # const N = 3
+    const N = 10
     tspan = (0.0, 8.0)
     # tspan = (0.0, 0.1)  # benchmark time span
     tol = 1e-10
@@ -75,12 +75,16 @@ end
 # show important param
 
 N
-T()
+T() / rd
 tspan
 Td / rd
 Cd / rd
 lp
-title = model_type * "_N5_3p"
+if param_type == "ideal"
+    title = model_type * "_N" * string(N) * "_T" * string(Int(T() / rd)) * "_" * param_type
+else
+    title = model_type * "_N" * string(N) * "_" * param_type
+end
 
 # solve the ode
 
@@ -112,7 +116,7 @@ begin
     lines!(ax_dxe, t, sol_dxe)
     lines!(ax_ddxe, t, sol_ddxe)
 
-    # dispnew(fig)
+    dispnew(fig)
 
     # function eta
     fig1 = Figure()
