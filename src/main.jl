@@ -10,11 +10,12 @@ begin
     using BenchmarkTools, Profile
 end
 
-# model_type = "full"
-model_type = "partial"
-# param_type = "ideal"
+model_type = "full"
+# model_type = "partial"
+# param_type = "ideal_1p"
+param_type = "ideal"
 # param_type = "3p"
-param_type = "1p"
+# param_type = "1p"
 
 # init config params
 begin
@@ -24,8 +25,9 @@ end
 # simulation params
 begin
     const N = 10
-    tspan = (0.0, 8.0)
-    # tspan = (0.0, 0.1)  # benchmark time span
+    # tspan = (0.0, 1.0)
+    # tspan = (0.0, 8.0)
+    tspan = (0.0, 0.1)  # benchmark time span
     tol = 1e-10
 end
 
@@ -77,9 +79,7 @@ end
 N
 T() / rd
 tspan
-Td / rd
-Cd / rd
-lp
+
 if param_type == "ideal"
     title = model_type * "_N" * string(N) * "_T" * string(Int(T() / rd)) * "_" * param_type
 else
@@ -88,8 +88,8 @@ end
 
 # solve the ode
 
-@time sol = solve(prob, TRBDF2(autodiff=false), reltol=tol, abstol=tol);
-# @benchmark sol = solve(prob, TRBDF2(autodiff=false), reltol=tol, abstol=tol) samples = 40 seconds = 20
+# @time sol = solve(prob, TRBDF2(autodiff=false), reltol=tol, abstol=tol);
+@benchmark sol = solve(prob, TRBDF2(autodiff=false), reltol=tol, abstol=tol) samples = 40 seconds = 80
 
 ## post process
 
@@ -97,12 +97,12 @@ end
 begin
     plt_tspan = tspan
     # plt_tspan = (0.0, 2.0)
-    plot_size = 20000 * Int(plt_tspan[2] - plt_tspan[1])
+    plot_size = Int(20000 * plt_tspan[2] - 20000 * plt_tspan[1])
     include("post.jl")
     display("post data generated!")
 end
 
-# plot
+# plot1
 begin
     # GLMakie.activate!()
     dispnew(figure) = display(GLMakie.Screen(), figure)
@@ -116,7 +116,7 @@ begin
     lines!(ax_dxe, t, sol_dxe)
     lines!(ax_ddxe, t, sol_ddxe)
 
-    dispnew(fig)
+    # dispnew(fig)
 
     # function eta
     fig1 = Figure()
@@ -151,7 +151,7 @@ end
 
 begin
     using MAT
-    file = matopen("./data/" * title * ".mat", "w")
+    file = matopen("./data/test_" * title * ".mat", "w")
     write(file, title * "_xe", sol_xe)
     write(file, title * "_dxe", sol_dxe)
     write(file, title * "_force", sol_cable_force)
