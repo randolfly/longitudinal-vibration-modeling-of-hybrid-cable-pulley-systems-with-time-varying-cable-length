@@ -17,7 +17,7 @@ Id = 1.7485e-5
 
 # pulley params
 pulley_num = 0
-Ipi = 0.0;
+Ipi = 1.7485e-5;
 Ip = ones(pulley_num) * Ipi
 lp = 0.42 .+ 1.04 .* [i for i in 0:(pulley_num-1)]'
 rp = ones(pulley_num) * rd
@@ -38,5 +38,5 @@ Cm = 0.0
 
 # driven force
 function T()
-    return 200 * rd
+    return 50 * rd
 end

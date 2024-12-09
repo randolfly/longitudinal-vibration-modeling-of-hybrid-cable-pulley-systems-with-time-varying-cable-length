@@ -29,7 +29,7 @@ begin
         sol_deta[i, :] = dx[1:N]
         sol_dxe[i] = dx[end]
 
-        sol_u1[i] = u(x, sol_xe[i] - rp[1])
+        sol_u1[i] = u(x, sol_xe[i])
         sol_u2[i] = u(x, L / 3)
 
         sol_cable_force[i] = get_cable_force(sol_xe[i], sol_ddxe[i])

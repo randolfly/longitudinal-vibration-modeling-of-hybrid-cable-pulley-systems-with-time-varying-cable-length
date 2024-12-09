@@ -24,7 +24,7 @@ end
 
 # simulation params
 begin
-    const N = 10
+    const N = 3
     # tspan = (0.0, 1.0)
     # tspan = (0.0, 8.0)
     tspan = (0.0, 0.1)  # benchmark time span
@@ -80,7 +80,7 @@ N
 T() / rd
 tspan
 
-if param_type == "ideal"
+if param_type == "ideal" || param_type == "ideal_1p"
     title = model_type * "_N" * string(N) * "_T" * string(Int(T() / rd)) * "_" * param_type
 else
     title = model_type * "_N" * string(N) * "_" * param_type
@@ -151,7 +151,7 @@ end
 
 begin
     using MAT
-    file = matopen("./data/test_" * title * ".mat", "w")
+    file = matopen("./data/" * title * ".mat", "w")
     write(file, title * "_xe", sol_xe)
     write(file, title * "_dxe", sol_dxe)
     write(file, title * "_force", sol_cable_force)
