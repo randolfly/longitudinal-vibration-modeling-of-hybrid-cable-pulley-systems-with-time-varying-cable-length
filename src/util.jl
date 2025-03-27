@@ -82,6 +82,25 @@ function get_cable_force(mp::ModelParam, xe::Float64, ddxe::Float64)
     return cable_force
 end
 
+# =============== SIMPLE MODEL ====================
+
+## u function
+
+# u(l,t) = ∑ Φᵢ(l) xᵢ
+function u(mt::SimpleModel, mp::ModelParam, x::Vector{Float64}, l::Float64)
+    xe = x[end]
+    _u = 0
+    for i = 1:mp.N
+        _u += Φ(i, l / xe) * x[i]
+    end
+    return _u
+end
+
+function dθ(mt::SimpleModel, mp::ModelParam, dxe::Float64)
+    _dθ = (-dxe) / mp.rd
+    return _dθ
+end
+
 # =============== PARTIAL MODEL ====================
 
 ## u function

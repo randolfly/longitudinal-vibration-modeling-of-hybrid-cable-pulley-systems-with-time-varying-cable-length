@@ -1,6 +1,10 @@
 using .HybridCableModel
 
 function ode_function!(dX, X, mp, t)
+    ode_delegate!(mt, dX, X, mp, t)
+end
+
+function ode_delegate!(mt::PartialModel, dX, X, mp, t)
     x = X[1:(mp.N+1)]
     dx = X[(mp.N+2):end]
 
@@ -21,6 +25,93 @@ function ode_function!(dX, X, mp, t)
     dX[mp.N+2:end] = ddx
     nothing
 end
+
+function ode_delegate!(mt::FullModel, dX, X, mp, t)
+    x = X[1:(mp.N+1)]
+    dx = X[(mp.N+2):end]
+
+    _s = s(mt, mp, x)
+    _ds = ds(mt, mp, x, dx)
+    _M = M(mt, mp, _s, _ds)
+    _F = F(mt, mp, _s, _ds)
+    _G = G(mt, mp, x, dx)
+    _C = C(mt, mp, x, dx)
+
+    id_M = I(mp.N + 1)
+    zero_c = zeros(mp.N + 1, 1)
+
+    _A = _M * [id_M; _G]
+    _B = _F - _M * [zero_c; _C]
+    ddx = inv(_A) * _B
+    dX[1:mp.N+1] = dx
+    dX[mp.N+2:end] = ddx
+    nothing
+end
+
+function ode_delegate!(mt::SimpleModel, dX, X, mp, t)
+    x = X[1:(mp.N+1)]
+    dx = X[(mp.N+2):end]
+
+    _M = M(mt, mp, x, dx)
+    _F = F(mt, mp, x, dx)
+    _K = K(mt, mp, x, dx)
+
+    ddx = inv(_M) * (_F - _K * x)
+    dX[1:mp.N+1] = dx
+    dX[mp.N+2:end] = ddx
+    nothing
+end
+
+# =============== SIMPLE MODEL ====================
+function M(mt::SimpleModel, mp::ModelParam, x::Vector{Float64}, dx::Vector{Float64})
+    xe = x[end]
+    dxe = dx[end]
+    M11 = zeros(mp.N, mp.N)
+    for i in 1:mp.N
+        for j in 1:mp.N
+            M11[i, j] = ∫ΦΦ(i, j)
+        end
+    end
+    M12 = -[∫Φ(i) for i in 1:mp.N]
+    M21 = M12'
+    M22 = 1 / xe * (mp.m / mp.ρ + mp.Id / (mp.ρ * mp.rd^2) + mp.L)
+    _M = [M11 M12; M21 M22]
+    return _M
+end
+
+function K(mt::SimpleModel, mp::ModelParam, x::Vector{Float64}, dx::Vector{Float64})
+    xe = x[end]
+    dxe = dx[end]
+    a = sqrt(mp.A * mp.E / mp.ρ)
+
+    K11 = zeros(mp.N, mp.N)
+    for i in 1:mp.N
+        for j in 1:mp.N
+            K11[i, j] = ∫∂ₓΦ∂ₓΦ(j, i)
+        end
+    end
+    K11 = a^2 / xe^2 * K11
+
+    K12 = zeros(mp.N, 1)
+    K21 = K12'
+    K22 = 0.0
+    _K = [K11 K12; K21 K22]
+    return _K
+end
+
+function F(mt::SimpleModel, mp::ModelParam, x::Vector{Float64}, dx::Vector{Float64})
+    xe = x[end]
+    dxe = dx[end]
+    _dθ = dθ(mt, mp, dxe)
+    F1 = zeros(mp.N, 1)
+    F2 = -1 / 2 * mp.ρ * dxe^2 - (mp.T - f(_dθ, mp.Td, mp.Cd)) / mp.rd
+    F2 = F2 + mp.k * (mp.L - xe) + fm(dxe, mp.Tm, mp.Cm)
+    F2 = F2 / (mp.ρ * xe)
+    _F = [F1; F2]
+    return _F
+end
+
+# =============== PARTIAL MODEL ====================
 
 function M(mt::PartialModel, mp::ModelParam, s::Vector{Float64}, ds::Vector{Float64})
     # s = [q; θ; θ₁, θ₂,...,θq]
@@ -148,6 +239,7 @@ function C(mt::PartialModel, mp::ModelParam, x::Vector{Float64}, dx::Vector{Floa
     return _C
 end
 
+# =============== FULL MODEL ====================
 
 function M(mt::FullModel, mp::ModelParam, s::Vector{Float64}, ds::Vector{Float64})
     # s = [q; θ; θ₁, θ₂,...,θq]
