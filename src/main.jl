@@ -7,9 +7,9 @@ begin
     using DataFrames
     using PrettyTables
     using BenchmarkTools, Profile
-    # using MAT
+    using MAT
     include("hybrid_cable_model.jl")
-    using .HybridCableModel
+    import .HybridCableModel
 end
 begin
     include("hybrid_cable_model.jl")
@@ -20,8 +20,8 @@ begin
 end
 
 begin
-    N = 10
-    tspan = (0.0, 0.001)
+    N = 3
+    tspan = (0.0, 0.1)
     tol = 1e-10
 
     L = 5.0
@@ -42,9 +42,9 @@ begin
     k = 100.0
     m = 0.65
 
-    # mt = FullModel()
+    mt = FullModel()
     # mt = PartialModel()
-    mt = SimpleModel()
+    # mt = SimpleModel()
 
     mp = ModelParam(
         N=N,
@@ -79,16 +79,28 @@ end
 post_sol(mp, sol)
 
 # begin
+# function plot_deformation(sol_t, sol, mp, mt, length_size=1000)
+#     sol_u_all = zeros(length_size)
+#     x = sol(sol_t)[1:mp.N+1]
+#     ux = LinRange(0, x[end], length_size)
+#     for i in 1:length_size
+#         sol_u_all[i] = u(mt, mp, x, ux[i]) * 1000 # unit: mm
+#     end
+
+#     fig4 = Figure()
+#     ax_dcu = Axis(fig4[1, 1:2], xlabel="coordinate(m)", ylabel="deformation(mm)", title="t=" * string(sol_t))
+#     lines!(ax_dcu, ux, sol_u_all, label="u_all")
+#     display(GLMakie.Screen(), fig4)
+# end
 #     # shows the cable deformation along the cable at t=0.2
 #     # plot_deformation(tspan[2] * 1e-2, sol, mp, mt)
 #     # plot_deformation(tspan[2] * 1e-4, sol, mp, mt)
 #     # plot_deformation(tspan[2] * 1e-6, sol, mp, mt)
 # end
-
+# generate dispalcement data for all time steps
 begin
-    sol_t_range = LinRange(tspan[1], tspan[2], 30)
+    sol_t_range = LinRange(tspan[1], tspan[2], Int(tspan[2] * 1000))
     length_size = 1000
-    ux = LinRange(0, x[end], length_size)
 
     function get_all_deformation(sol_t, sol, mp, mt, length_size=1000)
         sol_u_all = zeros(length_size)
@@ -100,42 +112,81 @@ begin
         return sol_u_all
     end
 
-    fig = Figure()
-    ax = Axis(fig[1, 1:2], xlabel="coordinate(m)", ylabel="deformation(mm)", title="t=" * string(0))
+    function get_all_strains(sol_t, sol, mp, mt, length_size=1000)
+        sol_uₓ_all = zeros(length_size)
+        x = sol(sol_t)[1:mp.N+1]
+        ux = LinRange(0, x[end], length_size)
+        for i in 1:length_size
+            sol_uₓ_all[i] = ∂ₓu(mt, mp, x, ux[i]) * 1000 # unit: mm
+        end
+        return sol_uₓ_all
+    end
 
-    record(fig, "all_deformation.mp4", sol_t_range; framerate=2) do t
+
+    fig = Figure()
+    ax1 = Axis(fig[1, 1:2], xlabel="coordinate(x/xe)", ylabel="deformation(mm)", title="t=" * string(0))
+    ax2 = Axis(fig[2, 1:2], xlabel="coordinate(x/xe)", ylabel="strain")
+    ux = LinRange(0, 1, length_size)
+    record(fig, "ideal_1pulley_deformation_with_fixlimit_strain.mp4", sol_t_range; framerate=2) do t
         display(t)
         sol_u_all = get_all_deformation(t, sol, mp, mt)
-        empty!(ax)
-        lines!(ax, ux, sol_u_all, label="u_all", color=:tomato)
-        ax.title = "t=" * string(t)
-        ylims!(ax, -8e-2, 1e-5)
+        sol_uₓ_all = get_all_strains(t, sol, mp, mt)
+        empty!(ax1)
+        empty!(ax2)
+
+        lines!(ax1, ux, sol_u_all, label="u_all", color=:tomato)
+        lines!(ax2, ux, sol_uₓ_all, label="u_all", color=:tomato)
+
+        ax1.title = "t=" * string(t)
+
+        ylims!(ax1, -4e-1, 1e-5)
+
         display(fig)
     end
 
-    record(fig, "all_deformation_autoaxis.mp4", sol_t_range; framerate=2) do t
+    close(file)
+
+    record(fig, "ideal_1pulley_deformation_with_autolimit_strain.mp4", sol_t_range; framerate=2) do t
         display(t)
         sol_u_all = get_all_deformation(t, sol, mp, mt)
-        empty!(ax)
-        lines!(ax, ux, sol_u_all, label="u_all", color=:tomato)
-        ax.title = "t=" * string(t)
-        autolimits!(ax)
-        # ylims!(ax, -8e-2, 1e-5)
+        sol_uₓ_all = get_all_strains(t, sol, mp, mt)
+        empty!(ax1)
+        empty!(ax2)
+
+        lines!(ax1, ux, sol_u_all, label="u_all", color=:tomato)
+        lines!(ax2, ux, sol_uₓ_all, label="u_all", color=:tomato)
+
+        ax1.title = "t=" * string(t)
+
         display(fig)
     end
 end
 
+begin
+    # export post data
 
-function plot_deformation(sol_t, sol, mp, mt, length_size=1000)
-    sol_u_all = zeros(length_size)
-    x = sol(sol_t)[1:mp.N+1]
-    ux = LinRange(0, x[end], length_size)
-    for i in 1:length_size
-        sol_u_all[i] = u(mt, mp, x, ux[i]) * 1000 # unit: mm
-    end
+    # file = matopen("./ideal_1pulley_deformation_N3.mat", "w")
+    # sol_u_t1 = get_all_deformation(0.001, sol, mp, mt)
+    # sol_uₓ_t1 = get_all_strains(0.001, sol, mp, mt)
+    # sol_u_t2 = get_all_deformation(0.019, sol, mp, mt)
+    # sol_uₓ_t2 = get_all_strains(0.019, sol, mp, mt)
+    # write(file, "N3_t1_u", sol_u_t1)
+    # write(file, "N3_t1_ux", sol_uₓ_t1)
+    # write(file, "N3_t2_u", sol_u_t2)
+    # write(file, "N3_t2_ux", sol_uₓ_t2)
+    # close(file)
 
-    fig4 = Figure()
-    ax_dcu = Axis(fig4[1, 1:2], xlabel="coordinate(m)", ylabel="deformation(mm)", title="t=" * string(sol_t))
-    lines!(ax_dcu, ux, sol_u_all, label="u_all")
-    display(GLMakie.Screen(), fig4)
+
+    # file = matopen("./ideal_1pulley_deformation_N10.mat", "w")
+    # sol_u_t1 = get_all_deformation(0.001, sol, mp, mt)
+    # sol_uₓ_t1 = get_all_strains(0.001, sol, mp, mt)
+    # sol_u_t2 = get_all_deformation(0.019, sol, mp, mt)
+    # sol_uₓ_t2 = get_all_strains(0.019, sol, mp, mt)
+    # write(file, "N10_t1_u", sol_u_t1)
+    # write(file, "N10_t1_ux", sol_uₓ_t1)
+    # write(file, "N10_t2_u", sol_u_t2)
+    # write(file, "N10_t2_ux", sol_uₓ_t2)
+    # close(file)
+
+    display("post data exported!")
 end

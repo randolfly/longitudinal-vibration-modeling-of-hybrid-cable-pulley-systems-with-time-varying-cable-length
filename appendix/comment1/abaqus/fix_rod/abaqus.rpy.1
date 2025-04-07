@@ -1,0 +1,640 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/CAE Release 2023 replay file
+# Internal Version: 2022_09_29-02.11.55 183150
+# Run by randolf on Sat Oct 19 15:28:30 2024
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=245.008895874023, 
+    height=186.772415161133)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from caeModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+Mdb()
+#: 新的模型数据库已创建.
+#: 模型 "Model-1" 已创建.
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=2.0)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+s.Line(point1=(0.0, 0.0), point2=(1.0, 0.0))
+s.HorizontalConstraint(entity=g[2], addUndoState=False)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.72434, 
+    farPlane=2.0469, cameraPosition=(0.357321, 0.0159317, 1.88562), 
+    cameraTarget=(0.357321, 0.0159317, 0))
+s.Spot(point=(0.3, 0.0))
+p = mdb.models['Model-1'].Part(name='Part-1', dimensionality=THREE_D, 
+    type=DEFORMABLE_BODY)
+p = mdb.models['Model-1'].parts['Part-1']
+p.BaseWire(sketch=s)
+s.unsetPrimaryObject()
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].sketches['__profile__']
+mdb.saveAs(pathName='D:/tmp/desktop/osc_test/abaqus/osc_beam')
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.86566, 
+    farPlane=2.13434, width=1.04199, height=0.618936, viewOffsetX=0.00528036, 
+    viewOffsetY=0.00541458)
+p = mdb.models['Model-1'].parts['Part-1']
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#1 ]', ), )
+p.PartitionEdgeByParam(edges=pickedEdges, parameter=0.3)
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=ON, 
+    engineeringFeatures=ON)
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=OFF)
+mdb.models['Model-1'].Material(name='Material-1')
+mdb.models['Model-1'].materials['Material-1'].Depvar()
+mdb.models['Model-1'].materials['Material-1'].Density(table=((1.0, ), ))
+mdb.models['Model-1'].materials['Material-1'].Elastic(table=((1.0, 0.0), ))
+mdb.models['Model-1'].RectangularProfile(name='Profile-1', a=1.0, b=1.0)
+mdb.models['Model-1'].BeamSection(name='Section-1', 
+    integration=DURING_ANALYSIS, poissonRatio=0.0, profile='Profile-1', 
+    material='Material-1', temperatureVar=LINEAR, consistentMassMatrix=False)
+p = mdb.models['Model-1'].parts['Part-1']
+e = p.edges
+edges = e.getSequenceFromMask(mask=('[#3 ]', ), )
+region = regionToolset.Region(edges=edges)
+p = mdb.models['Model-1'].parts['Part-1']
+p.SectionAssignment(region=region, sectionName='Section-1', offset=0.0, 
+    offsetType=MIDDLE_SURFACE, offsetField='', 
+    thicknessAssignment=FROM_SECTION)
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+a = mdb.models['Model-1'].rootAssembly
+a.DatumCsysByDefault(CARTESIAN)
+p = mdb.models['Model-1'].parts['Part-1']
+a.Instance(name='Part-1-1', part=p, dependent=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    adaptiveMeshConstraints=ON)
+mdb.models['Model-1'].ImplicitDynamicsStep(name='Step-1', previous='Initial', 
+    timePeriod=3.0, maxNumInc=10000000, initialInc=1e-05, minInc=1e-06, 
+    nlgeom=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Step-1')
+mdb.models['Model-1'].fieldOutputRequests['F-Output-1'].setValues(frequency=1)
+mdb.models['Model-1'].historyOutputRequests['H-Output-1'].setValues(
+    frequency=1)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+a = mdb.models['Model-1'].rootAssembly
+v1 = a.instances['Part-1-1'].vertices
+verts1 = v1.getSequenceFromMask(mask=('[#1 ]', ), )
+region = regionToolset.Region(vertices=verts1)
+mdb.models['Model-1'].EncastreBC(name='BC-1', createStepName='Step-1', 
+    region=region, localCsys=None)
+session.viewports['Viewport: 1'].view.setValues(width=1.07689, height=0.639667, 
+    viewOffsetX=0.00780383, viewOffsetY=0.00286622)
+a = mdb.models['Model-1'].rootAssembly
+v1 = a.instances['Part-1-1'].vertices
+verts1 = v1.getSequenceFromMask(mask=('[#4 ]', ), )
+region = a.Set(vertices=verts1, name='end-2')
+mdb.models['Model-1'].EncastreBC(name='BC-2', createStepName='Step-1', 
+    region=region, localCsys=None)
+a = mdb.models['Model-1'].rootAssembly
+v1 = a.instances['Part-1-1'].vertices
+verts1 = v1.getSequenceFromMask(mask=('[#2 ]', ), )
+region = a.Set(vertices=verts1, name='force_set')
+mdb.models['Model-1'].ConcentratedForce(name='Load-1', createStepName='Step-1', 
+    region=region, cf2=-1.0, distributionType=UNIFORM, field='', 
+    localCsys=None)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+regionDef=mdb.models['Model-1'].rootAssembly.sets['force_set']
+mdb.models['Model-1'].HistoryOutputRequest(name='H-Output-2', 
+    createStepName='Step-1', variables=('U1', 'U2', 'U3', 'UR1', 'UR2', 'UR3', 
+    'COOR1', 'COOR2', 'COOR3'), frequency=1, region=regionDef, 
+    sectionPoints=DEFAULT, rebar=EXCLUDE)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+mdb.models['Model-1'].boundaryConditions['BC-1'].move('Step-1', 'Initial')
+mdb.models['Model-1'].boundaryConditions['BC-2'].move('Step-1', 'Initial')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=ON, loads=OFF, 
+    bcs=OFF, predefinedFields=OFF, connectors=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    meshTechnique=ON)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=OFF, 
+    engineeringFeatures=OFF, mesh=ON)
+session.viewports['Viewport: 1'].partDisplay.meshOptions.setValues(
+    meshTechnique=ON)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.83956, 
+    farPlane=2.16044, width=1.09299, height=0.65143, viewOffsetX=0.000439942, 
+    viewOffsetY=0.0149391)
+p = mdb.models['Model-1'].parts['Part-1']
+p.seedPart(size=0.01, deviationFactor=0.1, minSizeFactor=0.1)
+p = mdb.models['Model-1'].parts['Part-1']
+p.generateMesh()
+a1 = mdb.models['Model-1'].rootAssembly
+a1.regenerate()
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    meshTechnique=OFF)
+mdb.Job(name='Job-1', model='Model-1', description='', type=ANALYSIS, 
+    atTime=None, waitMinutes=0, waitHours=0, queue=None, memory=4096, 
+    memoryUnits=MEGA_BYTES, getMemoryFromAnalysis=True, 
+    explicitPrecision=SINGLE, nodalOutputPrecision=SINGLE, echoPrint=OFF, 
+    modelPrint=OFF, contactPrint=OFF, historyPrint=OFF, userSubroutine='', 
+    scratch='', resultsFormat=ODB, numThreadsPerMpiProcess=1, 
+    multiprocessingMode=DEFAULT, numCpus=2, numDomains=2, numGPUs=0)
+session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=ON, 
+    engineeringFeatures=ON, mesh=OFF)
+session.viewports['Viewport: 1'].partDisplay.meshOptions.setValues(
+    meshTechnique=OFF)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+p = mdb.models['Model-1'].parts['Part-1']
+e = p.edges
+edges = e.getSequenceFromMask(mask=('[#1 ]', ), )
+region=regionToolset.Region(edges=edges)
+p = mdb.models['Model-1'].parts['Part-1']
+p.assignBeamSectionOrientation(region=region, method=N1_COSINES, n1=(0.0, 0.0, 
+    -1.0))
+#: 选中区域内的梁方向已指定.
+p = mdb.models['Model-1'].parts['Part-1']
+e = p.edges
+edges = e.getSequenceFromMask(mask=('[#2 ]', ), )
+region=regionToolset.Region(edges=edges)
+p = mdb.models['Model-1'].parts['Part-1']
+p.assignBeamSectionOrientation(region=region, method=N1_COSINES, n1=(0.0, 0.0, 
+    -1.0))
+#: 选中区域内的梁方向已指定.
+a1 = mdb.models['Model-1'].rootAssembly
+a1.regenerate()
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+mdb.jobs['Job-1'].writeInput(consistencyChecking=OFF)
+#: 作业输入文件已写入到 "Job-1.inp".
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Error in job Job-1: THE NUMBER OF SOLUTION-DEPENDENT STATE VARIABLES CAN NOT BE SET EQUAL TO ZERO.
+#: Job Job-1: Analysis Input File Processor aborted due to errors.
+#: Error in job Job-1: Analysis Input File Processor exited with an error - Please see the  Job-1.dat file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(interactions=ON, 
+    constraints=ON, connectors=ON, engineeringFeatures=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, interactions=OFF, constraints=OFF, 
+    engineeringFeatures=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF, datacheckJob=True)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Error in job Job-1: THE NUMBER OF SOLUTION-DEPENDENT STATE VARIABLES CAN NOT BE SET EQUAL TO ZERO.
+#: Job Job-1: Analysis Input File Processor aborted due to errors.
+#: Error in job Job-1: Analysis Input File Processor exited with an error - Please see the  Job-1.dat file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    adaptiveMeshConstraints=ON)
+mdb.models['Model-1'].fieldOutputRequests['F-Output-1'].setValues(frequency=10)
+mdb.models['Model-1'].historyOutputRequests['H-Output-2'].setValues(
+    frequency=10)
+mdb.models['Model-1'].historyOutputRequests['H-Output-1'].setValues(
+    frequency=10)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+mdb.models['Model-1'].boundaryConditions['BC-1'].move('Initial', 'Step-1')
+mdb.models['Model-1'].boundaryConditions['BC-2'].move('Initial', 'Step-1')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF, optimizationTasks=ON, 
+    geometricRestrictions=ON, stopConditions=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF, datacheckJob=True)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Error in job Job-1: THE NUMBER OF SOLUTION-DEPENDENT STATE VARIABLES CAN NOT BE SET EQUAL TO ZERO.
+#: Job Job-1: Analysis Input File Processor aborted due to errors.
+#: Error in job Job-1: Analysis Input File Processor exited with an error - Please see the  Job-1.dat file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON)
+mdb.models['Model-1'].boundaryConditions['BC-2'].setValues(typeName=PINNED)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF, datacheckJob=True)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Error in job Job-1: THE NUMBER OF SOLUTION-DEPENDENT STATE VARIABLES CAN NOT BE SET EQUAL TO ZERO.
+#: Job Job-1: Analysis Input File Processor aborted due to errors.
+#: Error in job Job-1: Analysis Input File Processor exited with an error - Please see the  Job-1.dat file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].materials['Material-1'].depvar
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON)
+mdb.models['Model-1'].boundaryConditions['BC-2'].setValues(typeName=ENCASTRE)
+mdb.models['Model-1'].boundaryConditions['BC-2'].move('Step-1', 'Initial')
+mdb.models['Model-1'].boundaryConditions['BC-1'].move('Step-1', 'Initial')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Initial')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF, adaptiveMeshConstraints=ON)
+mdb.models['Model-1'].fieldOutputRequests['F-Output-1'].setValues(frequency=1)
+mdb.models['Model-1'].historyOutputRequests['H-Output-1'].setValues(
+    frequency=1)
+mdb.models['Model-1'].historyOutputRequests['H-Output-2'].setValues(
+    frequency=1)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    adaptiveMeshConstraints=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF, datacheckJob=True)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#: 模型: D:/tmp/desktop/osc_test/abaqus/Job-1.odb
+#: 装配件个数:         1
+#: 装配件实例个数: 0
+#: 部件实例的个数:     1
+#: 网格数:             1
+#: 单元集合数:       1
+#: 结点集合数:          3
+#: 分析步的个数:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.basicOptions.setValues(
+    renderBeamProfiles=ON, beamScaleFactor=0.1)
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=3.02299, 
+    farPlane=4.36999, width=1.5487, height=0.919915, viewOffsetX=-0.00967989, 
+    viewOffsetY=-0.00617042)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=3.42368, 
+    farPlane=3.98896, width=1.75397, height=1.04185, cameraPosition=(0.494801, 
+    0.309837, 3.68746), cameraUpVector=(-0.288995, 0.859364, -0.421871), 
+    cameraTarget=(0.502643, -0.0554747, 0.0472177), viewOffsetX=-0.0109629, 
+    viewOffsetY=-0.00698829)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(step='Step-1')
+mdb.models['Model-1'].loads['Load-1'].setValues(cf1=1.0, cf2=0.0, 
+    distributionType=UNIFORM, field='')
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Error in job Job-1: Time increment required is less than the minimum specified
+#: Error in job Job-1: THE ANALYSIS HAS BEEN TERMINATED DUE TO PREVIOUS ERRORS. ALL OUTPUT REQUESTS HAVE BEEN WRITTEN FOR THE LAST CONVERGED INCREMENT.
+#: Job Job-1: Abaqus/Standard aborted due to errors.
+#: Error in job Job-1: Abaqus/Standard Analysis exited with an error - Please see the  message file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    meshTechnique=ON)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+session.viewports['Viewport: 1'].partDisplay.setValues(sectionAssignments=OFF, 
+    engineeringFeatures=OFF, mesh=ON)
+session.viewports['Viewport: 1'].partDisplay.meshOptions.setValues(
+    meshTechnique=ON)
+p = mdb.models['Model-1'].parts['Part-1']
+p.deleteMesh()
+p = mdb.models['Model-1'].parts['Part-1']
+p.seedPart(size=0.001, deviationFactor=0.1, minSizeFactor=0.1)
+p = mdb.models['Model-1'].parts['Part-1']
+p.generateMesh()
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.99459, 
+    farPlane=2.00541, width=0.037061, height=0.0220886, viewOffsetX=-0.312655, 
+    viewOffsetY=-0.00366618)
+a1 = mdb.models['Model-1'].rootAssembly
+a1.regenerate()
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(mesh=OFF, 
+    adaptiveMeshConstraints=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.meshOptions.setValues(
+    meshTechnique=OFF)
+mdb.models['Model-1'].steps['Step-1'].setValues(nlgeom=OFF)
+mdb.models['Model-1'].steps['Step-1'].setValues(minInc=1e-07)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    adaptiveMeshConstraints=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb'])
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#: 模型: D:/tmp/desktop/osc_test/abaqus/Job-1.odb
+#: 装配件个数:         1
+#: 装配件实例个数: 0
+#: 部件实例的个数:     1
+#: 网格数:             1
+#: 单元集合数:       1
+#: 结点集合数:          3
+#: 分析步的个数:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    adaptiveMeshConstraints=ON)
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb'])
+odb = session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb']
+session.viewports['Viewport: 1'].setValues(displayedObject=odb)
+odb = session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb']
+xy1 = xyPlot.XYDataFromHistory(odb=odb, 
+    outputVariableName='Spatial displacement: U1 at Node 2 in NSET FORCE_SET', 
+    steps=('Step-1', ), suppressQuery=True, __linkedVpName__='Viewport: 1')
+c1 = session.Curve(xyData=xy1)
+xyp = session.XYPlot('XYPlot-1')
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+chart.setValues(curvesToPlot=(c1, ), )
+session.charts[chartName].autoColor(lines=True, symbols=True)
+session.viewports['Viewport: 1'].setValues(displayedObject=xyp)
+odb = session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb']
+xy_result = session.XYDataFromHistory(name='U1 N: 2 NSET FORCE_SET-1', odb=odb, 
+    outputVariableName='Spatial displacement: U1 at Node 2 in NSET FORCE_SET', 
+    steps=('Step-1', ), __linkedVpName__='Viewport: 1')
+c1 = session.Curve(xyData=xy_result)
+xyp = session.xyPlots['XYPlot-1']
+chartName = xyp.charts.keys()[0]
+chart = xyp.charts[chartName]
+chart.setValues(curvesToPlot=(c1, ), )
+session.charts[chartName].autoColor(lines=True, symbols=True)
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+odb = session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb']
+session.viewports['Viewport: 1'].setValues(displayedObject=odb)
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U2'), )
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=SCALE_FACTOR)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U1'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='CF', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(COMPONENT, 'U1'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='A', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='AR', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='CF', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='CM', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='E', outputPosition=INTEGRATION_POINT, refinement=(INVARIANT, 
+    'Max. In-Plane Principal'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='E', outputPosition=INTEGRATION_POINT, refinement=(COMPONENT, 
+    'E11'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='E', outputPosition=INTEGRATION_POINT, refinement=(COMPONENT, 
+    'E12'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='RF', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='S', outputPosition=INTEGRATION_POINT, refinement=(INVARIANT, 
+    'Mises'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='S', outputPosition=INTEGRATION_POINT, refinement=(INVARIANT, 
+    'Max. Principal (Abs)'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='S', outputPosition=INTEGRATION_POINT, refinement=(COMPONENT, 
+    'S11'), )
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='S', outputPosition=INTEGRATION_POINT, refinement=(INVARIANT, 
+    'Mises'), )
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+session.viewports['Viewport: 1'].view.setValues(session.views['User-1'])
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+mdb.saveAs(pathName='D:/tmp/desktop/osc_test/abaqus/test/osc_beam_test.cae')
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\test\osc_beam_test.cae".
+session.viewports['Viewport: 1'].partDisplay.setValues(mesh=OFF)
+session.viewports['Viewport: 1'].partDisplay.meshOptions.setValues(
+    meshTechnique=OFF)
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+openMdb(pathName='D:/tmp/desktop/osc_test/abaqus/test/osc_beam_test.cae')
+#: 模型数据库 "D:\tmp\desktop\osc_test\abaqus\test\osc_beam_test.cae" 已打开.
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON, adaptiveMeshConstraints=OFF)
+del mdb.models['Model-1'].loads['Load-1']
+a = mdb.models['Model-1'].rootAssembly
+a.ReferencePoint(point=(0.7, 0.0, 0.0))
+a = mdb.models['Model-1'].rootAssembly
+r1 = a.referencePoints
+refPoints1=(r1[7], )
+region = a.Set(referencePoints=refPoints1, name='force_2')
+mdb.models['Model-1'].ConcentratedForce(name='Load-1', createStepName='Step-1', 
+    region=region, cf1=-1.0, distributionType=UNIFORM, field='', 
+    localCsys=None)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, connectors=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Error in job Job-1: NODE SET ASSEMBLY_FORCE_2 HAS NOT BEEN DEFINED
+#: Error in job Job-1: A CONCENTRATED LOAD HAS BEEN SPECIFIED ON NODE SET ASSEMBLY_FORCE_2.  THIS NODE SET IS NOT ACTIVE IN THE MODEL
+#: Job Job-1: Analysis Input File Processor aborted due to errors.
+#: Error in job Job-1: Analysis Input File Processor exited with an error - Please see the  Job-1.dat file for possible error messages if the file exists.
+#: Job Job-1 aborted due to errors.
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=ON, bcs=ON, 
+    predefinedFields=ON, connectors=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(loads=OFF, bcs=OFF, 
+    predefinedFields=OFF, interactions=ON, constraints=ON, 
+    engineeringFeatures=ON)
+a = mdb.models['Model-1'].rootAssembly
+r1 = a.referencePoints
+refPoints1=(r1[7], )
+region1=regionToolset.Region(referencePoints=refPoints1)
+a = mdb.models['Model-1'].rootAssembly
+e1 = a.instances['Part-1-1'].edges
+edges1 = e1.getSequenceFromMask(mask=('[#2 ]', ), )
+region2=regionToolset.Region(edges=edges1)
+mdb.models['Model-1'].Coupling(name='Constraint-1', controlPoint=region1, 
+    surface=region2, influenceRadius=WHOLE_SURFACE, couplingType=KINEMATIC, 
+    alpha=0.0, localCsys=None, u1=ON, u2=ON, u3=ON, ur1=ON, ur2=ON, ur3=ON)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(interactions=OFF, 
+    constraints=OFF, connectors=OFF, engineeringFeatures=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF, datacheckJob=True)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb'])
+#: 警告: 输出数据库 'D:/tmp/desktop/osc_test/abaqus/Job-1.odb' 的磁盘文件已更改. 
+#: 
+#: 当前绘图操作已取消, 请重新打开文件以观察结果
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#* OdbError: 无法打开文件 D:/tmp/desktop/osc_test/abaqus/Job-1.odb. ***错误: 
+#* "D:/tmp/desktop/osc_test/abaqus/Job-1.odb"  不是数据库文件.
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+odb = session.mdbData['Model-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=odb)
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+#: 警告: 选中的主变量在当前帧中对当前显示组中所有单元均不可用.
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    UNDEFORMED, ))
+session.viewports['Viewport: 1'].view.setValues(session.views['User-1'])
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+#: 警告: 选中的主变量在当前帧中对当前显示组中所有单元均不可用.
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.mdbData['Model-1'])
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#: 模型: D:/tmp/desktop/osc_test/abaqus/Job-1.odb
+#: 装配件个数:         1
+#: 装配件实例个数: 0
+#: 部件实例的个数:     1
+#: 网格数:             2
+#: 单元集合数:       1
+#: 结点集合数:          6
+#: 分析步的个数:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=SCALE_FACTOR)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].view.setValues(session.views['User-1'])
+session.viewports['Viewport: 1'].odbDisplay.setPrimaryVariable(
+    variableLabel='U', outputPosition=NODAL, refinement=(INVARIANT, 
+    'Magnitude'), )
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.62377, 
+    farPlane=2.41603, width=2.66863, height=1.58515, viewOffsetX=0.22539, 
+    viewOffsetY=-0.19425)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    SYMBOLS_ON_DEF, ))
+#* 绘图选项 "渲染梁截面" 仅支持未变形, 已变形和云图显示模式.
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    UNDEFORMED, ))
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].view.setValues(nearPlane=18.2016, 
+    farPlane=23.1108, width=9.57811, height=5.68933, cameraPosition=(-1.34426, 
+    14.244, 14.4637), cameraUpVector=(-0.347002, 0.712414, -0.609964))
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(interactions=ON, 
+    constraints=ON, connectors=ON, engineeringFeatures=ON)
+mdb.models['Model-1'].constraints['Constraint-1'].setValues(alpha=0.0, ur1=OFF, 
+    ur2=OFF, ur3=OFF)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(interactions=OFF, 
+    constraints=OFF, connectors=OFF, engineeringFeatures=OFF)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+session.viewports['Viewport: 1'].setValues(
+    displayedObject=session.odbs['D:/tmp/desktop/osc_test/abaqus/Job-1.odb'])
+#: 警告: 输出数据库 'D:/tmp/desktop/osc_test/abaqus/Job-1.odb' 的磁盘文件已更改. 
+#: 
+#: 当前绘图操作已取消, 请重新打开文件以观察结果
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#: 模型: D:/tmp/desktop/osc_test/abaqus/Job-1.odb
+#: 装配件个数:         1
+#: 装配件实例个数: 0
+#: 部件实例的个数:     1
+#: 网格数:             2
+#: 单元集合数:       1
+#: 结点集合数:          6
+#: 分析步的个数:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.51029, 
+    farPlane=9.13938, width=2.47639, height=1.47096, viewOffsetX=-0.528914, 
+    viewOffsetY=0.0116503)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=2.56401, 
+    farPlane=10.4967, width=4.20416, height=2.49725, cameraPosition=(1.9104, 
+    -1.39833, 2.9196), cameraUpVector=(-0.446998, 0.891842, -0.069361), 
+    cameraTarget=(0.646997, -1.34569, 1.10352), viewOffsetX=-0.897936, 
+    viewOffsetY=0.0197787)
