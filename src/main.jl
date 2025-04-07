@@ -8,6 +8,7 @@ begin
     using PrettyTables
     using BenchmarkTools, Profile
     # using MAT
+    include("hybrid_cable_model.jl")
     using .HybridCableModel
 end
 begin
@@ -19,23 +20,24 @@ begin
 end
 
 begin
-    N = 3
-    tspan = (0.0, 0.3)
+    N = 10
+    tspan = (0.0, 0.001)
     tol = 1e-10
 
     L = 5.0
     pulley_num = 1
-    T = 0.75
 
     rd = 1.5e-2
-    Id = 1.7485e-5 + 1.2e-3
-    Td = 2.0 * rd
-    Cd = 0.0 * rd
+    Id = 1.7485e-5
+    Td = 0.155 * rd
+    Cd = 0.020 * rd
 
     rp = 1.5e-2
     Ip = 1.7485e-5
-    Tp = 1.0 * rd
+    Tp = 0.0 * rd
     Cp = 0.0 * rd
+
+    T = 100 * rd
 
     k = 100.0
     m = 0.65
@@ -75,3 +77,65 @@ begin
 end
 
 post_sol(mp, sol)
+
+# begin
+#     # shows the cable deformation along the cable at t=0.2
+#     # plot_deformation(tspan[2] * 1e-2, sol, mp, mt)
+#     # plot_deformation(tspan[2] * 1e-4, sol, mp, mt)
+#     # plot_deformation(tspan[2] * 1e-6, sol, mp, mt)
+# end
+
+begin
+    sol_t_range = LinRange(tspan[1], tspan[2], 30)
+    length_size = 1000
+    ux = LinRange(0, x[end], length_size)
+
+    function get_all_deformation(sol_t, sol, mp, mt, length_size=1000)
+        sol_u_all = zeros(length_size)
+        x = sol(sol_t)[1:mp.N+1]
+        ux = LinRange(0, x[end], length_size)
+        for i in 1:length_size
+            sol_u_all[i] = u(mt, mp, x, ux[i]) * 1000 # unit: mm
+        end
+        return sol_u_all
+    end
+
+    fig = Figure()
+    ax = Axis(fig[1, 1:2], xlabel="coordinate(m)", ylabel="deformation(mm)", title="t=" * string(0))
+
+    record(fig, "all_deformation.mp4", sol_t_range; framerate=2) do t
+        display(t)
+        sol_u_all = get_all_deformation(t, sol, mp, mt)
+        empty!(ax)
+        lines!(ax, ux, sol_u_all, label="u_all", color=:tomato)
+        ax.title = "t=" * string(t)
+        ylims!(ax, -8e-2, 1e-5)
+        display(fig)
+    end
+
+    record(fig, "all_deformation_autoaxis.mp4", sol_t_range; framerate=2) do t
+        display(t)
+        sol_u_all = get_all_deformation(t, sol, mp, mt)
+        empty!(ax)
+        lines!(ax, ux, sol_u_all, label="u_all", color=:tomato)
+        ax.title = "t=" * string(t)
+        autolimits!(ax)
+        # ylims!(ax, -8e-2, 1e-5)
+        display(fig)
+    end
+end
+
+
+function plot_deformation(sol_t, sol, mp, mt, length_size=1000)
+    sol_u_all = zeros(length_size)
+    x = sol(sol_t)[1:mp.N+1]
+    ux = LinRange(0, x[end], length_size)
+    for i in 1:length_size
+        sol_u_all[i] = u(mt, mp, x, ux[i]) * 1000 # unit: mm
+    end
+
+    fig4 = Figure()
+    ax_dcu = Axis(fig4[1, 1:2], xlabel="coordinate(m)", ylabel="deformation(mm)", title="t=" * string(sol_t))
+    lines!(ax_dcu, ux, sol_u_all, label="u_all")
+    display(GLMakie.Screen(), fig4)
+end
