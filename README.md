@@ -1,5 +1,7 @@
 # ABOUT😀
 
+> Please check the dev channel of this repository, which contains the newest source code after revision.
+
 this repository contains code of paper "Longitudinal vibration modeling of hybrid cable-pulley systems with time-varying cable length", the main structure is listed below:
 
 - data: contains the data of this research
