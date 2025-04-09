@@ -2,6 +2,7 @@
 
 this repository contains code of paper "Longitudinal vibration modeling of hybrid cable-pulley systems with time-varying cable length", the main structure is listed below:
 
+- appendix: contains the resources related to the reviewers' comments
 - data: contains the data of this research
 - doc: contains some notes about this repository
 - src: contains the main code of this research
@@ -42,15 +43,10 @@ the `partial_N5_3p.mat` represents the data is in experiment with conditions:
 
 - `bc`: contains the initial conditions of the ODE
 - `main`: contains the main solve codes, also provide data export and figure illustration generation
-- `ode_full`: the odes of the full model
-- `ode_partial`: the odes of the partial model
-- `param_1p`: the parameters of 1 pulley case of physical experiment
-- `param_3p`: the parameters of 3 pulley case of physical experiment
-- `param_ideal_1p`: the parameters of 1 pulley case of numberical simulation
-- `param_ideal_3p`: the parameters of 3 pulley case of numberical simulation
+- `hybrid_cable_model`: defines the model params and export model types
+- `ode`: the odes of the model(full model and partial model)
 - `post`: generate data from solver results with given sample frequency(20kHz)
-- `util_full`: util functions of full model
-- `util_partial`: util functions of partial model
+- `util`: util functions of the model(full model and partial model)
 
 **maplesim**
 
@@ -59,6 +55,22 @@ the `partial_N5_3p.mat` represents the data is in experiment with conditions:
 - `WinchPulleyModel_ideal_1p`: 1 pulley file of numerical simulation
 - `WinchPulleyModel_ideal_3p`: 3 pulley file of numerical simulation
 
+### APPENDIX FILES
+
+the folders in the appendix directory is orgainsed by the comment, the detial contents are listed below:
+
+- comment1
+  - abaqus: contains the abaqus codes related to the fix-length rod vibration case study in the response letter
+  - julia: contains the julia codes related to the fix-length rod vibration case study in the response letter
+  - mathematica: contains the mathematica codes related to the fix-length rod vibration case study in the response letter
+  - ideal_1pulley_deformation_N3.mat: contains the deformation and strain data of the single-pulley case in the manuscript, with the cable segement number set as 3
+  - ideal_1pulley_deformation_with_autolimit_strain_N10.mp4: contains the deformation and strian vibration video
+  - the following files follow the same naming rule
+- comment5
+  - ideal_0pulley_deformation_N3.mat: contains the deformation and strain data of the non-pulley case in the manuscript, with the cable segement number set as 3
+  - ideal_0pulley_deformation_with_autolimit_strain_N10.mp4: contains the deformation and strian vibration video
+  - the following files follow the same naming rule
+
 ## HOW TO USE🤠
 
 ### FULL MODEL AND PARTIAL MODEL(Julia code)
@@ -66,18 +78,15 @@ the `partial_N5_3p.mat` represents the data is in experiment with conditions:
 execute the `main.jl` to simulate the model.
 
 > Because julia has JIT, the first run could be extremely slow due to the compile of packages and codes
-
 > The suggest way to run julia code is to execute it in VSCode, the manuals can be found in:
 >
 > - [julia official site](https://discourse.julialang.org/)
 > - [configuration of julia in VSCode](https://code.visualstudio.com/docs/languages/julia)
 
-- change the `model_type` in `main.jl` from `full` to `partial` to switch the model as full model to partial model
-- change the `param_type` to switch pulley types
-- change the `N` to change cable segements N
-- change the `tspan` to change the simulation time duration
-- change the `tol` to change the solver tolerance
-- comment on lines 91/92 to switch between single simulation or benchmark simulation
+- modify the model params and model type as you want. The model params initial values are defined in the `hybrid_cable_model.jl` ![alt text](asset/main_model_param.png)
+- run the `main.jl` script. The VSCode is suggested as the running platform
+- uncomment the lines in the `main.jl` for your purpose
+  - for example, if you want to generate the deformation filed video, uncomment the lines 83-142, the related videos will be generated.
 
 ### RIGID MODEL(Maplesim code)
 

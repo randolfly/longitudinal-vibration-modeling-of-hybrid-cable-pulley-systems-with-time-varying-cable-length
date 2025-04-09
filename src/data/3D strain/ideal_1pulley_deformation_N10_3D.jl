@@ -1,0 +1,6 @@
+file = matopen("./ideal_1pulley_deformation_N10_3D.mat", "w")
+write(file, "sp_N10_tall_u", sol_u_all)
+write(file, "sp_N10_tall_ux", sol_uₓ_all)
+write(file, "sp_N10_tall_t", Array(sol_t_range))
+write(file, "sp_N10_tall_x", Array(sol_x_range))
+close(file)
