@@ -76,6 +76,10 @@ function numerical_derivative(sol, t)
     ForwardDiff.derivative(t -> sol(t), t)
 end
 
+function get_cable_force(mt::ModelType, mp::ModelParam, x::Vector{Float64}, l::Float64)
+    uₓ = ∂ₓu(mt, mp, x, l)
+    return uₓ * mp.E * mp.A
+end
 
 function get_cable_force(mp::ModelParam, xe::Float64, ddxe::Float64)
     cable_force = mp.k * (mp.L - xe) - mp.m * ddxe

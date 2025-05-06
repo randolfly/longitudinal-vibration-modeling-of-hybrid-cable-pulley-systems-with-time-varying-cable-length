@@ -26,7 +26,7 @@ function show_model_param(mp::ModelParam)
         Td_rd=[mp.Td / mp.rd],
         Cd=[mp.Cd],
         pulley_num=[mp.pulley_num],
-        lp=[mp.lp[1]],
+        lp=[mp.lp],
         rp=[mp.rp[1]],
         Ip=[mp.Ip[1]],
         Tp_rp=[mp.Tp[1] / mp.rp[1]],
@@ -36,7 +36,7 @@ function show_model_param(mp::ModelParam)
     pretty_table(df2)
 end
 
-function post_sol(mp::ModelParam, sol, export_data=false)
+function post_sol(mt::ModelType, mp::ModelParam, sol, export_data=false)
     # extract sol data into 20000 points
     plt_tspan = mp.tspan
     plot_size = Int(20000 * plt_tspan[2] - 20000 * plt_tspan[1])
@@ -54,7 +54,8 @@ function post_sol(mp::ModelParam, sol, export_data=false)
         sol_u1 = zeros(plot_size)
         sol_u2 = zeros(plot_size)
 
-        sol_cable_force = zeros(plot_size)
+        sol_cable_force1 = zeros(plot_size)
+        sol_cable_force2 = zeros(plot_size)
         sol_cable_equivalent_stiffness = zeros(plot_size)
 
         # X = [dq; q]; q=[eta(1:N); xe]
@@ -74,12 +75,13 @@ function post_sol(mp::ModelParam, sol, export_data=false)
             sol_u1[i] = u(mt, mp, x, sol_xe[i])
             sol_u2[i] = u(mt, mp, x, mp.L / 3)
 
-            sol_cable_force[i] = get_cable_force(mp, sol_xe[i], sol_ddxe[i])
-            sol_cable_equivalent_stiffness[i] = sol_cable_force[i] / (mp.L - sol_xe[i])
-            if (sol_cable_equivalent_stiffness[i] > 3e3)
-                # remove nan
-                sol_cable_equivalent_stiffness[i] = 3e3
-            end
+            sol_cable_force1[i] = get_cable_force(mp, sol_xe[i], sol_ddxe[i])
+            sol_cable_force2[i] = get_cable_force(mt, mp, x, x[end])
+            # sol_cable_equivalent_stiffness[i] = sol_cable_force[i] / (mp.L - sol_xe[i])
+            # if (sol_cable_equivalent_stiffness[i] > 3e3)
+            #     # remove nan
+            #     sol_cable_equivalent_stiffness[i] = 3e3
+            # end
         end
 
     end
@@ -98,11 +100,11 @@ function post_sol(mp::ModelParam, sol, export_data=false)
         fig = Figure()
         ax_xe = Axis(fig[1, 1:2], ylabel="xe")
         ax_dxe = Axis(fig[2, 1:2], ylabel="dxe")
-        # ax_ddxe = Axis(fig[3, 1:2], ylabel="ddxe")
+        ax_ddxe = Axis(fig[3, 1:2], ylabel="ddxe")
         lines!(ax_xe, t, sol_xe)
         lines!(ax_dxe, t, sol_dxe)
-        # lines!(ax_ddxe, t, sol_ddxe)
-        # dispnew(fig)
+        lines!(ax_ddxe, t, sol_ddxe)
+        dispnew(fig)
 
         # function eta
         # fig1 = Figure()
@@ -128,10 +130,10 @@ function post_sol(mp::ModelParam, sol, export_data=false)
         # force plot
 
         fig3 = Figure()
-        ax_cf = Axis(fig3[1, 1:2], ylabel="cable force")
-        ax_ck = Axis(fig3[2, 1:2], ylabel="equivalent stiffness")
-        lines!(ax_cf, t, sol_cable_force)
-        lines!(ax_ck, t, sol_cable_equivalent_stiffness)
+        ax_cf = Axis(fig3[1, 1:2], ylabel="cable force1")
+        ax_ck = Axis(fig3[2, 1:2], ylabel="cable force2")
+        lines!(ax_cf, t, sol_cable_force1)
+        lines!(ax_ck, t, sol_cable_force2)
 
         dispnew(fig3)
     end

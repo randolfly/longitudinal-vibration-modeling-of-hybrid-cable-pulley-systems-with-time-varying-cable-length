@@ -20,12 +20,12 @@ begin
 end
 
 begin
-    N = 10
-    tspan = (0.0, 0.1)
+    N = 3
+    tspan = (0.0, 0.01)
     tol = 1e-10
 
     L = 5.0
-    pulley_num = 1
+    pulley_num = 2
 
     rd = 1.5e-2
     Id = 1.7485e-5
@@ -77,69 +77,70 @@ begin
     # @benchmark sol = solve(prob, TRBDF2(autodiff=false), reltol=mp.tol, abstol=mp.tol) samples = 40 seconds = 80
 end
 
-post_sol(mp, sol)
+post_sol(mt, mp, sol)
 
 # generate dispalcement video for all time steps
-# begin
-#     sol_t_range = LinRange(tspan[1], tspan[2], Int(tspan[2] * 1000))
-#     length_size = 1000
+begin
+    frame_rate = 24
+    sol_t_range = LinRange(tspan[1], tspan[2], frame_rate * 5)
+    length_size = 1000
 
-#     function get_all_deformation(sol_t, sol, mp, mt, length_size=1000)
-#         sol_u_all = zeros(length_size)
-#         x = sol(sol_t)[1:mp.N+1]
-#         ux = LinRange(0, x[end], length_size)
-#         for i in 1:length_size
-#             sol_u_all[i] = u(mt, mp, x, ux[i]) * 1000 # unit: mm
-#         end
-#         return sol_u_all
-#     end
+    function get_all_deformation(sol_t, sol, mp, mt, length_size=1000)
+        sol_u_all = zeros(length_size)
+        x = sol(sol_t)[1:mp.N+1]
+        ux = LinRange(0, x[end], length_size)
+        for i in 1:length_size
+            sol_u_all[i] = u(mt, mp, x, ux[i]) * 1000 # unit: mm
+        end
+        return sol_u_all
+    end
 
-#     function get_all_strains(sol_t, sol, mp, mt, length_size=1000)
-#         sol_uₓ_all = zeros(length_size)
-#         x = sol(sol_t)[1:mp.N+1]
-#         ux = LinRange(0, x[end], length_size)
-#         for i in 1:length_size
-#             sol_uₓ_all[i] = ∂ₓu(mt, mp, x, ux[i]) * 1000 # unit: mm
-#         end
-#         return sol_uₓ_all
-#     end
+    function get_all_strains(sol_t, sol, mp, mt, length_size=1000)
+        sol_uₓ_all = zeros(length_size)
+        x = sol(sol_t)[1:mp.N+1]
+        ux = LinRange(0, x[end], length_size)
+        for i in 1:length_size
+            sol_uₓ_all[i] = ∂ₓu(mt, mp, x, ux[i]) * 1000 # unit: mm
+        end
+        return sol_uₓ_all
+    end
 
-#     fig = Figure()
-#     ax1 = Axis(fig[1, 1:2], xlabel="coordinate(x/xe)", ylabel="deformation(mm)", title="t=" * string(0))
-#     ax2 = Axis(fig[2, 1:2], xlabel="coordinate(x/xe)", ylabel="strain")
-#     ux = LinRange(0, 1, length_size)
-#     record(fig, "ideal_1pulley_deformation_with_fixlimit_strain.mp4", sol_t_range; framerate=2) do t
-#         display(t)
-#         sol_u_all = get_all_deformation(t, sol, mp, mt)
-#         sol_uₓ_all = get_all_strains(t, sol, mp, mt)
-#         empty!(ax1)
-#         empty!(ax2)
+    fig = Figure()
+    ax1 = Axis(fig[1, 1:2], xlabel="coordinate(x/xe)", ylabel="deformation(mm)", title="t=" * string(0))
+    ax2 = Axis(fig[2, 1:2], xlabel="coordinate(x/xe)", ylabel="strain")
+    ux = LinRange(0, 1, length_size)
+    record(fig, "ideal_1pulley_deformation_with_fixlimit_strain.mp4", sol_t_range; framerate=frame_rate) do t
+        display(t)
+        sol_u_all = get_all_deformation(t, sol, mp, mt)
+        sol_uₓ_all = get_all_strains(t, sol, mp, mt)
+        empty!(ax1)
+        empty!(ax2)
 
-#         lines!(ax1, ux, sol_u_all, label="u_all", color=:tomato)
-#         lines!(ax2, ux, sol_uₓ_all, label="u_all", color=:tomato)
+        lines!(ax1, ux, sol_u_all, label="u_all", color=:tomato)
+        lines!(ax2, ux, sol_uₓ_all, label="u_all", color=:tomato)
 
-#         ax1.title = "t=" * string(t)
+        ax1.title = "t=" * string(t)
 
-#         ylims!(ax1, -4e-1, 1e-5)
+        ylims!(ax1, -4e-1, 1e-5)
 
-#         display(fig)
-#     end
+        display(fig)
+    end
 
-#     record(fig, "ideal_1pulley_deformation_with_autolimit_strain.mp4", sol_t_range; framerate=2) do t
-#         display(t)
-#         sol_u_all = get_all_deformation(t, sol, mp, mt)
-#         sol_uₓ_all = get_all_strains(t, sol, mp, mt)
-#         empty!(ax1)
-#         empty!(ax2)
+    record(fig, "ideal_1pulley_deformation_with_autolimit_strain.mp4", sol_t_range; framerate=frame_rate) do t
+        display(t)
+        sol_u_all = get_all_deformation(t, sol, mp, mt)
+        sol_uₓ_all = get_all_strains(t, sol, mp, mt)
+        empty!(ax1)
+        empty!(ax2)
 
-#         lines!(ax1, ux, sol_u_all, label="u_all", color=:tomato)
-#         lines!(ax2, ux, sol_uₓ_all, label="u_all", color=:tomato)
+        lines!(ax1, ux, sol_u_all, label="u_all", color=:tomato)
+        lines!(ax2, ux, sol_uₓ_all, label="u_all", color=:tomato)
 
-#         ax1.title = "t=" * string(t)
+        ax1.title = "t=" * string(t)
 
-#         display(fig)
-#     end
-# end
+        display(fig)
+    end
+end
 
 # generate 3D deformation data
 # begin
