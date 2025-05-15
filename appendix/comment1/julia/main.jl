@@ -71,9 +71,11 @@ begin
     sol_u4 = zeros(plot_size)
     sol_u5 = zeros(plot_size)
 
-    sol_f0 = zeros(plot_size)
-    sol_f1 = zeros(plot_size)
-    sol_f2 = zeros(plot_size)
+    sol_ux1 = zeros(plot_size)
+    sol_ux2 = zeros(plot_size)
+    sol_ux3 = zeros(plot_size)
+    sol_ux4 = zeros(plot_size)
+    sol_ux5 = zeros(plot_size)
 
 
     function numerical_derivative(sol, t)
@@ -88,12 +90,12 @@ begin
         return _u
     end
 
-    function fx(l::Real, eta::Vector{Float64})
-        _f = 0
+    function ux(l::Real, eta::Vector{Float64})
+        _ux = 0.0
         for i in 1:N
-            _f += E * A * eta[i] * cos(i * pi * l / L) / L
+            _ux += eta[i] * i * pi * cos(i * pi * l / L) / L
         end
-        return _f
+        return _ux
     end
 
     for i in 1:plot_size
@@ -110,9 +112,11 @@ begin
         sol_u5[i] = u(0.5, x)
 
 
-        sol_f0[i] = fx(0, x)
-        sol_f1[i] = fx(l, x)
-        sol_f2[i] = fx(L, x)
+        sol_ux1[i] = ux(0.1, x)
+        sol_ux2[i] = ux(0.2, x)
+        sol_ux3[i] = ux(0.3, x)
+        sol_ux4[i] = ux(0.4, x)
+        sol_ux5[i] = ux(0.5, x)
     end
 end
 
@@ -130,10 +134,12 @@ begin
     dispnew(fig1)
 
     fig2 = Figure()
-    ax_f = Axis(fig2[1, 1:2], ylabel="f")
-    lines!(ax_f, t, sol_f0, label="f(0)")
-    lines!(ax_f, t, sol_f1, label="f(l)")
-    lines!(ax_f, t, sol_f2, label="f(L)")
-    axislegend(ax_f, "force", position=:rt)
+    ax_ux = Axis(fig2[1, 1:2], ylabel="strain")
+    lines!(ax_ux, t, sol_ux1, label="u(0.1)")
+    lines!(ax_ux, t, sol_ux2, label="u(0.2)")
+    lines!(ax_ux, t, sol_ux3, label="u(0.3)")
+    lines!(ax_ux, t, sol_ux4, label="u(0.4)")
+    lines!(ax_ux, t, sol_ux5, label="u(0.5)")
+    axislegend(ax_ux, "strain", position=:rt)
     dispnew(fig2)
 end

@@ -1,14 +1,32 @@
 <?xml version="1.0"?><msgwrapper><Started><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName><clientHost type="string">randolf</clientHost><handle type="integer">0</handle></Started>
-<Odb_File><file type="string">D:\tmp\desktop\osc_test\abaqus\Job-1.odb</file><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Odb_File>
+<Warning><message type="string">STRAIN OUTPUT REQUEST LE IS NOT VALID FOR SOME ELEMENTS IN THIS ANALYSIS. THIS REQUEST IS SWITCHED TO THE STRAIN MEASURE, E.</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VF IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST IRF1 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST IRF2 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST IRF3 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST IRM1 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST IRM2 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST IRM3 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VF1 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VF2 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VF3 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VM1 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VM2 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST VM3 IS NOT AVAILABLE FOR THIS TYPE OF ANALYSIS</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST CW IS NOT VALID SINCE IT REQUESTS OUTPUT AT A DOF THAT IS NOT ACTIVE</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST RWM IS NOT VALID SINCE IT REQUESTS OUTPUT AT A DOF THAT IS NOT ACTIVE</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">OUTPUT REQUEST WARP IS NOT VALID SINCE IT REQUESTS OUTPUT AT A DOF THAT IS NOT ACTIVE</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Warning><message type="string">THIS MODAL HISTORY OUTPUT REQUEST IS NOT SUPPORTED FOR THIS PROCEDURE TYPE</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
+<Odb_File><file type="string">D:\doc\randolf.lib\phd\papers\04-绳索动力学模型论文\数值仿真\julia\longitudinal-vibration-modeling-of-hybrid-cable-pulley-systems-with-time-varying-cable-length\appendix\comment1\abaqus\fix_rod\Job-1.odb</file><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Odb_File>
 <Completed><message type="string">Analysis phase complete</message><phase type="symconst">BATCHPRE_PHASE</phase><jobName type="string">Job-1</jobName></Completed>
-<Started><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName><clientHost type="string">randolf</clientHost><handle type="integer">62184</handle></Started>
+<Started><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName><clientHost type="string">randolf</clientHost><handle type="integer">10724</handle></Started>
 <Step><stepId type="integer">1</stepId><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></Step>
 <MEMORY_ESTIMATE><memory type="float">31</memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></MEMORY_ESTIMATE>
-<PHYSICAL_MEMORY><physical_memory type="float">16062</physical_memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></PHYSICAL_MEMORY>
+<PHYSICAL_MEMORY><physical_memory type="float">24254</physical_memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></PHYSICAL_MEMORY>
 <MINIMUM_MEMORY><minimum_memory type="float">22</minimum_memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></MINIMUM_MEMORY>
 <Odb_Frame><step type="integer">0</step><frame type="integer">0</frame><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></Odb_Frame>
 <MEMORY_ESTIMATE><memory type="float">31</memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></MEMORY_ESTIMATE>
-<PHYSICAL_MEMORY><physical_memory type="float">16062</physical_memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></PHYSICAL_MEMORY>
+<PHYSICAL_MEMORY><physical_memory type="float">24254</physical_memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></PHYSICAL_MEMORY>
 <MINIMUM_MEMORY><minimum_memory type="float">22</minimum_memory><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></MINIMUM_MEMORY>
 <Warning><message type="string">There is zero MOMENT everywhere in the model based on the default criterion. please check the value of the average MOMENT during the current iteration to verify that the MOMENT is small enough to be treated as zero. if not, please use the solution controls to reset the criterion for zero MOMENT.</message><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></Warning>
 <Status><step type="integer">1</step><increment type="integer">1</increment><attempts type="integer">1</attempts><severe type="integer">0</severe><equilibrium type="integer">1</equilibrium><iterations type="integer">1</iterations><totalTime type="float">1e-05</totalTime><stepTime type="float">1e-05</stepTime><timeIncrement type="float">1e-05</timeIncrement><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></Status>
@@ -414,4 +432,4 @@
 <Status><step type="integer">1</step><increment type="integer">134</increment><attempts type="integer">1</attempts><severe type="integer">0</severe><equilibrium type="integer">1</equilibrium><iterations type="integer">1</iterations><totalTime type="float">3</totalTime><stepTime type="float">3</stepTime><timeIncrement type="float">0.0267604835592219</timeIncrement><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></Status>
 <End_Step><stepId type="integer">1</stepId><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></End_Step>
 <Completed><message type="string">Analysis phase complete</message><phase type="symconst">STANDARD_PHASE</phase><jobName type="string">Job-1</jobName></Completed>
-<JOB_COMPLETED><jobName type="string">Job-1</jobName><time type="string">Sat Oct 19 22:22:01 2024</time></JOB_COMPLETED></msgwrapper>
+<JOB_COMPLETED><jobName type="string">Job-1</jobName><time type="string">Thu May 15 15:07:12 2025</time></JOB_COMPLETED></msgwrapper>

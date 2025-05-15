@@ -2013,6 +2013,8 @@
     1,  1001,     1
 *Elset, elset=_PickedSet3, internal, generate
     1,  1000,     1
+*Nset, nset=plot_set
+ 104, 203, 304, 404, 504
 ** Region: (Section-1:Picked), (Beam Orientation:Picked)
 *Elset, elset=_I1, internal, generate
    1,  300,    1
@@ -2055,10 +2057,10 @@
 ** 
 ** BOUNDARY CONDITIONS
 ** 
-** Name: BC-1 Type: 对称/反对称/完全固定
+** Name: BC-1 Type: Symmetry/Antisymmetry/Encastre
 *Boundary
 _PickedSet4, ENCASTRE
-** Name: BC-2 Type: 对称/反对称/完全固定
+** Name: BC-2 Type: Symmetry/Antisymmetry/Encastre
 *Boundary
 end-2, ENCASTRE
 ** ----------------------------------------------------------------
@@ -2082,14 +2084,44 @@ force_set, 2, 0.
 ** 
 ** FIELD OUTPUT: F-Output-1
 ** 
-*Output, field, variable=PRESELECT, frequency=1
+*Output, field, frequency=1
+*Node Output
+A, CF, RF, U, V
+*Element Output, directions=YES
+E, EE, LE, PE, PEEQ, PEMAG, S
+*Contact Output
+CDISP, CSTRESS
+** 
+** FIELD OUTPUT: F-Output-2
+** 
+*Node Output, nset=Part-1-1.plot_set
+A, AR, AT, CF, RF, RM, RT, TF
+U, UR, UT, V, VF, VR, VT
+** 
+** HISTORY OUTPUT: H-Output-3
+** 
+*Output, history, frequency=1
+*Element Output
+IRF1, IRF2, IRF3, IRM1, IRM2, IRM3
 ** 
 ** HISTORY OUTPUT: H-Output-2
 ** 
-*Output, history, frequency=1
 *Node Output, nset=force_set
 COOR1, COOR2, COOR3, U1, U2, U3, UR1, UR2
 UR3
+** 
+** HISTORY OUTPUT: H-Output-4
+** 
+*Node Output, nset=Part-1-1.plot_set
+A1, A2, A3, AR, AR1, AR2, AR3, AT
+CF1, CF2, CF3, CM1, CM2, CM3, CW, RF1
+RF2, RF3, RM, RM1, RM2, RM3, RT, RWM
+TF1, TF2, TF3, TM1, TM2, TM3, U1, U2
+U3, UR, UR1, UR2, UR3, UT, V1, V2
+V3, VF1, VF2, VF3, VM1, VM2, VM3, VR
+VR1, VR2, VR3, VT, WARP
+*Modal Output
+GA, GU, GV
 ** 
 ** HISTORY OUTPUT: H-Output-1
 ** 
