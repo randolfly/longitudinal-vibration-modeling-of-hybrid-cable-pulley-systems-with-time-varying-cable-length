@@ -1,0 +1,101 @@
+# -*- coding: mbcs -*-
+#
+# Abaqus/CAE Release 2023 replay file
+# Internal Version: 2022_09_29-02.11.55 183150
+# Run by randolf on Sat Oct 19 16:23:24 2024
+#
+
+# from driverUtils import executeOnCaeGraphicsStartup
+# executeOnCaeGraphicsStartup()
+#: Executing "onCaeGraphicsStartup()" in the site directory ...
+from abaqus import *
+from abaqusConstants import *
+session.Viewport(name='Viewport: 1', origin=(0.0, 0.0), width=245.008895874023, 
+    height=186.772415161133)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].maximize()
+from caeModules import *
+from driverUtils import executeOnCaeStartup
+executeOnCaeStartup()
+session.viewports['Viewport: 1'].partDisplay.geometryOptions.setValues(
+    referenceRepresentation=ON)
+openMdb(pathName='D:/tmp/desktop/osc_test/abaqus/osc_beam.cae')
+#: 模型数据库 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae" 已打开.
+session.viewports['Viewport: 1'].setValues(displayedObject=None)
+p = mdb.models['Model-1'].parts['Part-1']
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+session.viewports['Viewport: 1'].assemblyDisplay.setValues(
+    optimizationTasks=OFF, geometricRestrictions=OFF, stopConditions=OFF)
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#: 模型: D:/tmp/desktop/osc_test/abaqus/Job-1.odb
+#: 装配件个数:         1
+#: 装配件实例个数: 0
+#: 部件实例的个数:     1
+#: 网格数:             2
+#: 单元集合数:       1
+#: 结点集合数:          6
+#: 分析步的个数:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].odbDisplay.basicOptions.setValues(
+    renderBeamProfiles=ON, beamScaleFactor=0.1)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    UNDEFORMED, ))
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+a = mdb.models['Model-1'].rootAssembly
+session.viewports['Viewport: 1'].setValues(displayedObject=a)
+mdb.jobs['Job-1'].submit(consistencyChecking=OFF)
+#: 作业输入文件 "Job-1.inp" 已提交分析.
+#: Job Job-1: Analysis Input File Processor completed successfully.
+#: Job Job-1: Abaqus/Standard completed successfully.
+#: Job Job-1 completed successfully. 
+o3 = session.openOdb(name='D:/tmp/desktop/osc_test/abaqus/Job-1.odb')
+#: 模型: D:/tmp/desktop/osc_test/abaqus/Job-1.odb
+#: 装配件个数:         1
+#: 装配件实例个数: 0
+#: 部件实例的个数:     1
+#: 网格数:             1
+#: 单元集合数:       1
+#: 结点集合数:          3
+#: 分析步的个数:              1
+session.viewports['Viewport: 1'].setValues(displayedObject=o3)
+session.viewports['Viewport: 1'].makeCurrent()
+session.viewports['Viewport: 1'].odbDisplay.display.setValues(plotState=(
+    CONTOURS_ON_DEF, ))
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=TIME_HISTORY)
+session.viewports['Viewport: 1'].animationController.play(duration=UNLIMITED)
+session.viewports['Viewport: 1'].animationController.setValues(
+    animationType=NONE)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.77579, 
+    farPlane=2.65008, width=0.626085, height=0.37189, viewOffsetX=-0.0123905, 
+    viewOffsetY=0.0123659)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=1.78427, 
+    farPlane=2.64474, width=0.629075, height=0.373666, cameraPosition=(1.83322, 
+    0.652014, 1.6445), cameraUpVector=(-0.562963, 0.76344, -0.316593), 
+    cameraTarget=(0.543595, -0.0238277, -0.0219923), viewOffsetX=-0.0124496, 
+    viewOffsetY=0.0124249)
+mdb.save()
+#: 模型数据库已保存到 "D:\tmp\desktop\osc_test\abaqus\osc_beam.cae".
