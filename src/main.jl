@@ -100,7 +100,7 @@ begin
         x = sol(sol_t)[1:mp.N+1]
         ux = LinRange(0, x[end], length_size)
         for i in 1:length_size
-            sol_uₓ_all[i] = ∂ₓu(mt, mp, x, ux[i]) * 1000 # unit: mm
+            sol_uₓ_all[i] = ∂ₓu(mt, mp, x, ux[i])
         end
         return sol_uₓ_all
     end
